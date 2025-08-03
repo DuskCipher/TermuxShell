@@ -282,7 +282,7 @@ theme_menu() {
     printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${LIGHT_GREEN}[F2]${RESET} ${LIGHT_WHITE}🤖 Android Theme       ${LIGHT_YELLOW}(Green Robot)${RESET}     ${LIGHT_WHITE}${BOLD}║${RESET}\n"
     printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${LIGHT_WHITE}[F3]${RESET} ${LIGHT_WHITE}⚫ Black Team Theme     ${LIGHT_WHITE}(Dark Mode)${RESET}       ${LIGHT_WHITE}${BOLD}║${RESET}\n"
     printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${LIGHT_BLUE}[F4]${RESET} ${LIGHT_WHITE}🎭 Anonymous Hacker     ${LIGHT_MAGENTA}(Mystery)${RESET}        ${LIGHT_WHITE}${BOLD}║${RESET}\n"
-    printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${LIGHT_MAGENTA}[F5]${RESET} ${LIGHT_WHITE}🌈 Rainbow Mode         ${LIGHT_RED}(Colorful!)${RESET}       ${LIGHT_WHITE}${BOLD}║${RESET}\n"
+    printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${LIGHT_RED}[F5]${RESET} ${LIGHT_WHITE}⚫ Dark Gothic Theme    ${LIGHT_RED}(Dark Mode!)${RESET}      ${LIGHT_WHITE}${BOLD}║${RESET}\n"
     printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${DIM}[00]${RESET} ${DIM}🔙 Kembali ke Menu Utama${RESET}                  ${LIGHT_WHITE}${BOLD}║${RESET}\n"
     printf "${LIGHT_WHITE}${BOLD}╚════════════════════════════════════════════════════╝${RESET}\n"
     printf "\n"
@@ -302,7 +302,7 @@ theme_menu() {
             apply_theme "anon"
             ;;
         5|F5|f5)
-            rainbow_mode
+            apply_theme "dark"
             ;;
         00|0)
             main_program
@@ -351,6 +351,11 @@ apply_theme() {
                 show_notification "success" "Anonymous theme berhasil diterapkan! 🎭"
             fi
             ;;
+        "dark")
+            # Dark theme menggunakan bash.bashrc utama yang sudah diupdate
+            cp bash.bashrc "$PREFIX/etc/bash.bashrc" 2>/dev/null || sudo cp bash.bashrc "$PREFIX/etc/bash.bashrc"
+            show_notification "success" "Dark Gothic theme berhasil diterapkan! ⚫"
+            ;;
     esac
     
     printf "\n"
@@ -378,21 +383,53 @@ apply_theme() {
     esac
 }
 
+#------------------------ Dark Gothic Theme ---------------------#
+dark_gothic_theme() {
+    printf "\n"
+    show_notification "info" "Mengaktifkan Dark Gothic Theme - Tema Gelap!"
+    
+    loading_animation "Generating dark theme configuration" 3
+    
+    # Dark theme sudah ada di bash.bashrc utama
+    show_notification "success" "Dark Gothic theme berhasil diterapkan! ⚫"
+    
+    printf "\n"
+    show_notification "warning" "Restart terminal untuk melihat perubahan!"
+    printf "\n"
+    printf "${LIGHT_WHITE}${BOLD}╔═══════════════════════════════════════╗${RESET}\n"
+    printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${LIGHT_GREEN}[01]${RESET} ${LIGHT_WHITE}🔙 Kembali ke Menu Utama${RESET}        ${LIGHT_WHITE}${BOLD}║${RESET}\n"
+    printf "${LIGHT_WHITE}${BOLD}║${RESET}  ${LIGHT_RED}[02]${RESET} ${LIGHT_WHITE}🚪 Exit${RESET}                      ${LIGHT_WHITE}${BOLD}║${RESET}\n"
+    printf "${LIGHT_WHITE}${BOLD}╚═══════════════════════════════════════╝${RESET}\n"
+    printf "\n"
+    read -p "$(printf "${LIGHT_CYAN}${BOLD}❯${RESET} ${LIGHT_WHITE}Pilih opsi: ${RESET}")" dark_choice
+
+    case "$dark_choice" in
+        1|01)
+            main_program
+            ;;
+        2|02)
+            exit_message
+            ;;
+        *)
+            show_notification "error" "Opsi tidak valid!"
+            sleep 1
+            dark_gothic_theme
+            ;;
+    esac
+}
+
 #------------------------ Rainbow Mode ---------------------#
 rainbow_mode() {
+    rainbow_banner
     printf "\n"
-    show_notification "info" "Mengaktifkan Rainbow Mode - Tema Colorful!"
+    draw_box "RAINBOW MODE ACTIVATION" "$LIGHT_MAGENTA"
+    printf "\n"
+    show_notification "info" "Mengaktifkan Rainbow Mode - Mode warna-warni!"
     
-    loading_animation "Generating rainbow configuration" 3
+    loading_animation "Generating rainbow theme configuration" 3
     
+    # Create rainbow bash configuration
     cat > rainbow_bash.bashrc << 'EOF'
-command_not_found_handle() {
-    if command -v command_not_found_handle >/dev/null 2>&1; then
-        /data/data/com.termux/files/usr/libexec/termux/command-not-found "$1"
-    else
-        echo "Command '$1' not found"
-    fi
-}
 
 # Rainbow PS1 with changing colors
 PS1='\[\033[38;5;196m\]┌─[\[\033[38;5;208m\]\T\[\033[38;5;196m\]]─────\[\033[38;5;46m\][ \[\033[38;5;51m\]RAINBOW USER \[\033[38;5;46m\]]\[\033[38;5;196m\]───[\[\033[38;5;201m\]\#\[\033[38;5;196m\]]\n\[\033[38;5;226m\]|\n\[\033[38;5;196m\]└─[\[\033[38;5;129m\]\W\[\033[38;5;196m\]]────►\[\033[38;5;46m\]'
